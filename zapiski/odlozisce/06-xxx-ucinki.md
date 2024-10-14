@@ -65,7 +65,6 @@ Za branje s konzole uporabimo funkcijo `read_line`.
 read_line
 ```
 
-Tudi tu nam prisotnost tipa `unit` nakazuje, da se bodo najverjetneje zgodili učinki, saj bi funkcija samo iz praznega nabora težko izračunala kakšno zanimivo vrednost. Žal v učbeniku te funkcije ne moremo smiselno poklicati.
 
 ```{code-cell}
 raise
