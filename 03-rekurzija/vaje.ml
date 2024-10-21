@@ -188,15 +188,11 @@ let rec loop (cond : 'a -> bool) (f : 'a -> 'a) (x : 'a) : 'a =
  - : string = "FICUS"
 [*----------------------------------------------------------------------------*)
 
-let fold_left_no_acc (f : 'a -> 'a -> 'a) (list : 'a list) : 'a =
-    let rec fold_left_no_acc_aux (acc : 'a) (list : 'a list) : 'a =
-        match list with
-        | [] -> acc
-        | head :: tail -> fold_left_no_acc_aux (f acc head) tail
-    in
+let rec fold_left_no_acc (f : 'a -> 'a -> 'a) (list : 'a list) : 'a =
     match list with
-    | ([] | _ :: []) -> raise (Failure "Input list with less than two elements")
-    | head :: tail -> fold_left_no_acc_aux head tail
+    | ([] | _ :: []) -> raise (Failure "Input list has less than two elements.")
+    | head1 :: head2 :: [] -> f head1 head2
+    | head1 :: head2 :: tail -> fold_left_no_acc f ((f head1 head2) :: tail)
 
 (*----------------------------------------------------------------------------*]
  Funkcija [apply_sequence f x n] vrne seznam zaporednih uporab funkcije [f] na
@@ -252,7 +248,12 @@ let filter (f : 'a -> bool) (list : 'a list) : 'a list =
  - : bool = false
 [*----------------------------------------------------------------------------*)
 
-let rec exists = ()
+let rec exists (f : 'a -> bool) (list : 'a list) : bool =
+    match list with
+    | [] -> false
+    | head :: tail ->
+        if f head then true
+        else exists f tail
 
 (*----------------------------------------------------------------------------*]
  Funkcija [first f default list] vrne prvi element seznama, za katerega
@@ -266,4 +267,9 @@ let rec exists = ()
  - : int = 0
 [*----------------------------------------------------------------------------*)
 
-let rec first = ()
+let rec first (f : 'a -> bool) (default : 'a) (list : 'a list) : 'a =
+    match list with
+    | [] -> default
+    | head :: tail ->
+        if f head then head
+        else first f default tail
