@@ -99,8 +99,8 @@ let test : intbool_list = Cons_int (5, Cons_bool (true, Cons_bool (true, Cons_in
 let rec intbool_map (f_int : int -> int) (f_bool : bool -> bool) (ib_list : intbool_list) : intbool_list =
     match ib_list with
     | Nil -> Nil
-    | Cons_int (hd, tail) -> Cons_int (f_int hd, intbool_map f_int f_bool tail)
-    | Cons_bool (hd, tail) -> Cons_bool (f_bool hd, intbool_map f_int f_bool tail)
+    | Cons_int (hd, tl) -> Cons_int (f_int hd, intbool_map f_int f_bool tl)
+    | Cons_bool (hd, tl) -> Cons_bool (f_bool hd, intbool_map f_int f_bool tl)
 
 (*----------------------------------------------------------------------------*
  Funkcija `intbool_reverse` obrne vrstni red elementov `intbool_list` seznama.
@@ -111,8 +111,8 @@ let intbool_reverse (ib_list : intbool_list) : intbool_list =
     let rec intbool_reverse_aux (acc : intbool_list) (ib_list : intbool_list) : intbool_list =
         match ib_list with
         | Nil -> Nil
-        | Cons_int (hd, tail) -> intbool_reverse_aux (Cons_int (hd, acc)) tail
-        | Cons_bool (hd, tail) -> intbool_reverse_aux (Cons_bool (hd, acc)) tail
+        | Cons_int (hd, tl) -> intbool_reverse_aux (Cons_int (hd, acc)) tl
+        | Cons_bool (hd, tl) -> intbool_reverse_aux (Cons_bool (hd, acc)) tl
     in
     intbool_reverse_aux Nil ib_list
 
@@ -126,8 +126,8 @@ let intbool_separate (ib_list : intbool_list) : int list * bool list =
     let rec intbool_separate_aux ((acc_int, acc_bool) : int list * bool list) (ib_list : intbool_list) : int list * bool list =
         match ib_list with
         | Nil -> (acc_int, acc_bool)
-        | Cons_int (hd, tail) -> intbool_separate_aux (hd :: acc_int, acc_bool) tail
-        | Cons_bool (hd, tail) -> intbool_separate_aux (acc_int, hd :: acc_bool) tail
+        | Cons_int (hd, tl) -> intbool_separate_aux (hd :: acc_int, acc_bool) tl
+        | Cons_bool (hd, tl) -> intbool_separate_aux (acc_int, hd :: acc_bool) tl
     in
     intbool_separate_aux ([], []) ib_list
 
@@ -218,14 +218,14 @@ let count_magic (wizard_list : wizard list) : magic_counter =
     let rec count_magic_aux (acc : magic_counter) (wizard_list : wizard list) : magic_counter =
         match wizard_list with
         | [] -> acc
-        | hd :: tail -> count_magic_aux
+        | hd :: tl -> count_magic_aux
             (
                 match hd.status with
                 | Newbie -> acc
                 | Student (magic, _) -> update acc magic
                 | Employed (magic, _) -> update acc magic
             )
-            tail
+            tl
     in
     count_magic_aux {fire = 0; frost = 0; arcane = 0} wizard_list
 
@@ -245,11 +245,11 @@ let primer_carovniki_2 = count_magic [professor; professor; professor]
 let rec find_candidate (magic : magic) (specialisation : specialisation) (wizard_list : wizard list) : string option =
     match wizard_list with
     | [] -> None
-    | hd :: tail ->
+    | hd :: tl ->
         match hd.status with
-        | (Newbie | Employed (_, _)) -> find_candidate magic specialisation tail
+        | (Newbie | Employed (_, _)) -> find_candidate magic specialisation tl
         | Student (student_magic, years) ->
-            if student_magic <> magic then find_candidate magic specialisation tail
+            if student_magic <> magic then find_candidate magic specialisation tl
             else
                 if
                 years <
@@ -259,7 +259,7 @@ let rec find_candidate (magic : magic) (specialisation : specialisation) (wizard
                     | Researcher -> 4
                     | Teacher -> 5
                 )
-                then find_candidate magic specialisation tail
+                then find_candidate magic specialisation tl
                 else Some hd.name
 
 let primer_carovniki_3 =
